@@ -434,6 +434,7 @@
 }
 
 #djDebug .djDebugUncollapsed {
+	display: inline;
     color: #333;
     text-decoration: none;
 }

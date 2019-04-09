@@ -8,15 +8,15 @@
                 }
             });
         },
-        show: function(element) {
-            element.style.display = 'block';
+        show: function(element, style) {
+            element.style.display = style === undefined ? 'block' : style;
         },
         hide: function(element) {
             element.style.display = 'none';
         },
-        toggle: function(element, value) {
+        toggle: function(element, value, show_style) {
             if (value) {
-                $$.show(element);
+                $$.show(element, show_style);
             } else {
                 $$.hide(element);
             }
@@ -141,10 +141,37 @@
                 var name = this.getAttribute('data-toggle-name');
                 var container = this.closest('.djDebugPanelContent').querySelector('#' + name + '_' + id);
                 container.querySelectorAll('.djDebugCollapsed').forEach(function(e) {
-                    $$.toggle(e, open_me);
+                    $$.toggle(e, open_me, 'inline');
                 });
                 container.querySelectorAll('.djDebugUncollapsed').forEach(function(e) {
-                    $$.toggle(e, !open_me);
+                    $$.toggle(e, !open_me, 'inline');
+                });
+                this.closest('.djDebugPanelContent').querySelectorAll('.djToggleDetails_' + id).forEach(function(e) {
+                    if (open_me) {
+                        e.classList.add('djSelected');
+                        e.classList.remove('djUnselected');
+                        self.textContent = self.getAttribute('data-toggle-close');
+                    } else {
+                        e.classList.remove('djSelected');
+                        e.classList.add('djUnselected');
+                        self.textContent = self.getAttribute('data-toggle-open');
+                    }
+                    var switch_ = e.querySelector('.djToggleSwitch')
+                    if (switch_) switch_.textContent = self.textContent;
+                });
+            });
+
+            // Used SQL panel
+            $$.on(djDebug, 'click', '.djDebugCollapsed, .djDebugUncollapsed', function(event) {
+                event.preventDefault();
+                var container = this.parentElement;
+                var open_me = this.classList.contains('djDebugUncollapsed');
+
+                container.querySelectorAll('.djDebugCollapsed').forEach(function(e) {
+                    $$.toggle(e, open_me, 'inline');
+                });
+                container.querySelectorAll('.djDebugUncollapsed').forEach(function(e) {
+                    $$.toggle(e, !open_me, 'inline');
                 });
                 this.closest('.djDebugPanelContent').querySelectorAll('.djToggleDetails_' + id).forEach(function(e) {
                     if (open_me) {
